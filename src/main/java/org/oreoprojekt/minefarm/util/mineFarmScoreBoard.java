@@ -4,17 +4,27 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
+import org.oreoprojekt.minefarm.Minefarm;
 
 public class mineFarmScoreBoard {
+
+    private Minefarm plugin;
 
     public mineFarmMoney money;
     public mineFarmCash cash;
     public mineFarmAutoPlantCount APCount;
     public mineFarmFly FLytime;
 
+    public mineFarmScoreBoard(Minefarm plugin) {
+        this.plugin = plugin;
+        this.money = new mineFarmMoney(plugin);
+        this.cash = new mineFarmCash(plugin);
+        this.FLytime = new mineFarmFly(plugin);
+        this.APCount = new mineFarmAutoPlantCount(plugin);
+    }
+
     public void createBoard(Player player) {
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        Scoreboard board = manager.getNewScoreboard();
+        Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective obj = board.registerNewObjective("Playerboard", "dummy", "【 Project.kr – " + player.getName().toString() + " 】");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         player.setScoreboard(board);

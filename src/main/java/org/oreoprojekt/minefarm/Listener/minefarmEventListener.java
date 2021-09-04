@@ -16,14 +16,17 @@ public class minefarmEventListener implements Listener {
 
     public mineFarmMoney money;
     public mineFarmCash cash;
-    public mineFarmScoreBoard scoreBoard;
     public mineFarmScoreBoardTimer scoreBoardTimer;
 
     private Minefarm plugin;
 
     public minefarmEventListener(Minefarm plugin) {
         this.plugin = plugin;
+        this.money = new mineFarmMoney(plugin);
+        this.cash = new mineFarmCash(plugin);
     }
+
+    mineFarmScoreBoard scoreBoard = new mineFarmScoreBoard(plugin);
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -40,7 +43,7 @@ public class minefarmEventListener implements Listener {
 
     @EventHandler
     public void killEntity(EntityDeathEvent e) {
-        if (e.getEntity().getKiller() instanceof Player) {
+        if (e.getEntity().getKiller() != null) {
             Player player = e.getEntity().getKiller();
             money.addMoney(player, 100);
             cash.addCash(player, 50);

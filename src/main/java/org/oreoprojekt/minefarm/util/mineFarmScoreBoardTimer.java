@@ -8,13 +8,14 @@ public class mineFarmScoreBoardTimer {
 
     private Minefarm plugin;
 
-    public mineFarmScoreBoardTimer(Minefarm plugin) {
-        this.plugin = plugin;
-    }
-
     public mineFarmMoney money;
     public mineFarmCash cash;
     public mineFarmScoreBoard scoreBoard;
+
+    public mineFarmScoreBoardTimer(Minefarm plugin) {
+        this.plugin = plugin;
+        this.scoreBoard = new mineFarmScoreBoard(plugin);
+    }
 
     public int task;
 

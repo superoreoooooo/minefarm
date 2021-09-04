@@ -11,10 +11,10 @@ import org.oreoprojekt.minefarm.util.mineFarmScoreBoardTimer;
 
 public final class Minefarm extends JavaPlugin {
 
-
     public mineFarmScoreBoardTimer scoreBoardTimer;
     public mineFarmScoreBoard scoreBoard;
     public MineFarmYmlManager data;
+
     minefarmEventListener eventListener = new minefarmEventListener(this);
     public static String Prefix = ChatColor.WHITE + "[" + ChatColor.GREEN + "MineFarm" + ChatColor.WHITE + "]";
 
@@ -23,6 +23,8 @@ public final class Minefarm extends JavaPlugin {
         getServer().getConsoleSender().sendMessage(Prefix + ChatColor.GREEN + "MineFarm Plugin On");
         getServer().getPluginManager().registerEvents(new minefarmEventListener(this), this);
         this.data = new MineFarmYmlManager(this);
+        this.scoreBoard = new mineFarmScoreBoard(this);
+        this.scoreBoardTimer = new mineFarmScoreBoardTimer(this);
 
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
             for (Player player : Bukkit.getOnlinePlayers()) {

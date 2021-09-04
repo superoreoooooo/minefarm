@@ -25,6 +25,7 @@ public class MineFarmYmlManager {
 
     public void reloadconfig() {
         if (this.configFile == null) {
+
             this.configFile = new File(this.plugin.getDataFolder(), "data.yml");
         }
         this.dataconfig = YamlConfiguration.loadConfiguration(this.configFile);
