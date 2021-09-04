@@ -9,6 +9,8 @@ public class mineFarmScoreBoard {
 
     public mineFarmMoney money;
     public mineFarmCash cash;
+    public mineFarmAutoPlantCount APCount;
+    public mineFarmFly FLytime;
 
     public void createBoard(Player player) {
         ScoreboardManager manager = Bukkit.getScoreboardManager();
@@ -20,16 +22,16 @@ public class mineFarmScoreBoard {
 
     public void scoreBoardList(Player player) {
         createBoard(player);
-        Score scoreMoney = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮은화 : " + ChatColor.GREEN + money.moneyNow(player));
+        Score scoreMoney = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮은화 : " + ChatColor.GRAY + money.moneyNow(player));
         scoreMoney.setScore(10);
         Score scoreCash = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮캐시 : " + ChatColor.GOLD + cash.cashNow(player));
         scoreCash.setScore(9);
         Score scoreParty = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮파티 : ");
         scoreParty.setScore(8);
-        Score scoreFly = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮날기 : ");
+        Score scoreFly = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮날기 : " + ChatColor.AQUA + FLytime.flyTimeNow(player));
         scoreFly.setScore(7);
-        Score scoreAutoSeedCount = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮심기 : ");
-        scoreAutoSeedCount.setScore(6);
+        Score scoreAutoPlantCount = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮심기 : " + ChatColor.GREEN + APCount.autoPlantCountNow(player));
+        scoreAutoPlantCount.setScore(6);
         Score scoreChatMode = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮채팅 : ");
         scoreChatMode.setScore(5);
         Score scoreTime = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮시각 : ");
