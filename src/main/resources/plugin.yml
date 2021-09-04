@@ -1,0 +1,6 @@
+name: MinefarmPlugin
+version: '${project.version}'
+main: org.oreoprojekt.minefarm.Minefarm
+api-version: 1.17
+authors: [ 0reo_0 ]
+description: 마인팜
