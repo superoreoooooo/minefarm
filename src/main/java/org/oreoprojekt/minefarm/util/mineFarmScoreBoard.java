@@ -17,6 +17,7 @@ public class mineFarmScoreBoard {
     public mineFarmLevel level;
     public mineFarmExp exp;
     public mineFarmChatMode chatMode;
+    public mineFarmCurrentTimeUtilizer timeUtilizer;
 
     public mineFarmScoreBoard(Minefarm plugin) {
         this.plugin = plugin;
@@ -27,6 +28,7 @@ public class mineFarmScoreBoard {
         this.level = new mineFarmLevel(plugin);
         this.exp = new mineFarmExp(plugin);
         this.chatMode = new mineFarmChatMode(plugin);
+        this.timeUtilizer = new mineFarmCurrentTimeUtilizer(plugin);
 
     }
 
@@ -51,7 +53,7 @@ public class mineFarmScoreBoard {
         scoreAutoPlantCount.setScore(6);
         Score scoreChatMode = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮채팅 : " + chatMode.getChatMode(player));
         scoreChatMode.setScore(5);
-        Score scoreTime = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮시각 : ");
+        Score scoreTime = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮시각 : " + timeUtilizer.getDate());
         scoreTime.setScore(4);
         Score scoreNull = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + " ");
         scoreNull.setScore(3);

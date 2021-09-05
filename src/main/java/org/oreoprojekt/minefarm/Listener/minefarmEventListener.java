@@ -42,7 +42,6 @@ public class minefarmEventListener implements Listener {
         if (chatMode.getChatMode(player) == null) {
             chatMode.setChatMode(player, "All");
         }
-        level.setlevel(player, level.getlevel(player) + 1);
     }
 
     @EventHandler

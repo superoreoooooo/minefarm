@@ -26,7 +26,7 @@ public class mineFarmScoreBoardTimer {
                 public void run() {
                     scoreBoard.scoreBoardList(player);
                 }
-            }, 0, 40); //2초마다 갱신 (20 * 초) 20틱이 1초
+            }, 0, 40); //1초마다 갱신 (20 * 초) 20틱이 1초
         }
         else {
             Bukkit.getScheduler().cancelTask(task);
