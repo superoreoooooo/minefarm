@@ -14,6 +14,9 @@ public class mineFarmScoreBoard {
     public mineFarmCash cash;
     public mineFarmAutoPlantCount APCount;
     public mineFarmFly FLytime;
+    public mineFarmLevel level;
+    public mineFarmExp exp;
+    public mineFarmChatMode chatMode;
 
     public mineFarmScoreBoard(Minefarm plugin) {
         this.plugin = plugin;
@@ -21,6 +24,10 @@ public class mineFarmScoreBoard {
         this.cash = new mineFarmCash(plugin);
         this.FLytime = new mineFarmFly(plugin);
         this.APCount = new mineFarmAutoPlantCount(plugin);
+        this.level = new mineFarmLevel(plugin);
+        this.exp = new mineFarmExp(plugin);
+        this.chatMode = new mineFarmChatMode(plugin);
+
     }
 
     public void createBoard(Player player) {
@@ -32,25 +39,25 @@ public class mineFarmScoreBoard {
 
     public void scoreBoardList(Player player) {
         createBoard(player);
-        Score scoreMoney = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮은화 : " + ChatColor.GRAY + money.moneyNow(player));
+        Score scoreMoney = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮은화 : " + ChatColor.GRAY + money.getMoney(player));
         scoreMoney.setScore(10);
-        Score scoreCash = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮캐시 : " + ChatColor.GOLD + cash.cashNow(player));
+        Score scoreCash = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮캐시 : " + ChatColor.GOLD + cash.getCash(player));
         scoreCash.setScore(9);
         Score scoreParty = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮파티 : ");
         scoreParty.setScore(8);
-        Score scoreFly = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮날기 : " + ChatColor.AQUA + FLytime.flyTimeNow(player));
+        Score scoreFly = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮날기 : " + ChatColor.AQUA + FLytime.getFlyTime(player));
         scoreFly.setScore(7);
-        Score scoreAutoPlantCount = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮심기 : " + ChatColor.GREEN + APCount.autoPlantCountNow(player));
+        Score scoreAutoPlantCount = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮심기 : " + ChatColor.GREEN + APCount.getAutoPlantCount(player));
         scoreAutoPlantCount.setScore(6);
-        Score scoreChatMode = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮채팅 : ");
+        Score scoreChatMode = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮채팅 : " + chatMode.getChatMode(player));
         scoreChatMode.setScore(5);
         Score scoreTime = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮시각 : ");
         scoreTime.setScore(4);
         Score scoreNull = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + " ");
         scoreNull.setScore(3);
-        Score scoreLevel = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮레벨 : ");
+        Score scoreLevel = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮레벨 : " + ChatColor.DARK_PURPLE + level.getlevel(player));
         scoreLevel.setScore(2);
-        Score scoreExp = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮경험치 : ");
+        Score scoreExp = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮경험치 : " + ChatColor.DARK_PURPLE + exp.getExp(player));
         scoreExp.setScore(1);
     }
 }
