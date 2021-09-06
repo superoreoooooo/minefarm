@@ -7,4 +7,7 @@ description: 마인팜
 commands:
   cm:
     description: 채팅모드 전환
-
+  우편:
+    aliases: [mail]
+  우편함:
+    aliases: [mailbox]

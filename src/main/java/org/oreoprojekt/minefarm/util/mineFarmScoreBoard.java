@@ -34,18 +34,20 @@ public class mineFarmScoreBoard {
 
     public void createBoard(Player player) {
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
-        Objective obj = board.registerNewObjective("Playerboard", "dummy", "【 Project.kr – " + player.getName().toString() + " 】");
+        Objective obj = board.registerNewObjective("Playerboard", "dummy", "【Project.kr】");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         player.setScoreboard(board);
     }
 
     public void scoreBoardList(Player player) {
         createBoard(player);
+        Score scoreName = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮이름 : " + player.getName().toString());
+        scoreName.setScore(11);
         Score scoreMoney = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮은화 : " + ChatColor.GRAY + money.getMoney(player));
         scoreMoney.setScore(10);
         Score scoreCash = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮캐시 : " + ChatColor.GOLD + cash.getCash(player));
         scoreCash.setScore(9);
-        Score scoreParty = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮파티 : ");
+        Score scoreParty = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮추천 : ");
         scoreParty.setScore(8);
         Score scoreFly = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮날기 : " + ChatColor.AQUA + FLytime.getFlyTime(player));
         scoreFly.setScore(7);
@@ -55,8 +57,8 @@ public class mineFarmScoreBoard {
         scoreChatMode.setScore(5);
         Score scoreTime = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮시각 : " + timeUtilizer.getDate());
         scoreTime.setScore(4);
-        Score scoreNull = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + " ");
-        scoreNull.setScore(3);
+        Score scoreNull1 = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + " ");
+        scoreNull1.setScore(3);
         Score scoreLevel = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮레벨 : " + ChatColor.DARK_PURPLE + level.getlevel(player));
         scoreLevel.setScore(2);
         Score scoreExp = player.getScoreboard().getObjective("Playerboard").getScore(ChatColor.WHITE + "⎮경험치 : " + ChatColor.DARK_PURPLE + exp.getExp(player));
