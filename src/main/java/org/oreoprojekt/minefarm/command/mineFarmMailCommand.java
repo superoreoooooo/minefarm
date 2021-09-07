@@ -60,13 +60,18 @@ public class mineFarmMailCommand implements CommandExecutor {
     }
 
     public void sendItem(Player player, Player target) {
-        ItemStack Item = player.getInventory().getItemInMainHand();
-        ItemMeta meta = Item.getItemMeta();
-        Material type = Item.getType();
-        int count = Item.getAmount();
-        alarmSystem.alarm(player, target);
-        mailSendSystem.sendmail(player, target, type, meta, count);
+        ItemStack air = new ItemStack(Material.AIR);
+        if (player.getInventory().getItemInMainHand().equals(air)) {
+            player.sendMessage("손에 아이템을 들고 있어야 합니다!");
+        }
+        else {
+            ItemStack Item = player.getInventory().getItemInMainHand();
+            ItemMeta meta = Item.getItemMeta();
+            Material type = Item.getType();
+            int count = Item.getAmount();
+            mailSendSystem.sendmail(player, target, type, meta, count);
 
-        player.getInventory().removeItem(Item);
+            player.getInventory().removeItem(Item);
+        }
     }
 }
