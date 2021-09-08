@@ -14,6 +14,8 @@ import org.oreoprojekt.minefarm.util.mineFarmChatMode;
 import org.oreoprojekt.minefarm.util.mineFarmMailAlarmSystem;
 import org.oreoprojekt.minefarm.util.mineFarmMailSendSystem;
 
+import java.io.IOException;
+
 public class mineFarmMailCommand implements CommandExecutor {
 
     private Minefarm plugin;
@@ -40,7 +42,11 @@ public class mineFarmMailCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("send")) {
                 if (Bukkit.getOnlinePlayers().toString().contains(args[1])) {
                     Player target = Bukkit.getPlayer(args[1]);
-                    sendItem(player, target);
+                    try {
+                        sendItem(player, target);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     return true;
                 }
                 else {
@@ -59,7 +65,7 @@ public class mineFarmMailCommand implements CommandExecutor {
         }
     }
 
-    public void sendItem(Player player, Player target) {
+    public void sendItem(Player player, Player target) throws IOException {
         ItemStack air = new ItemStack(Material.AIR);
         if (player.getInventory().getItemInMainHand().equals(air)) {
             player.sendMessage("손에 아이템을 들고 있어야 합니다!");
@@ -69,7 +75,7 @@ public class mineFarmMailCommand implements CommandExecutor {
             ItemMeta meta = Item.getItemMeta();
             Material type = Item.getType();
             int count = Item.getAmount();
-            mailSendSystem.sendmail(player, target, type, meta, count);
+            mailSendSystem.sendmail(player, target, type, meta, count, Item);
 
             player.getInventory().removeItem(Item);
         }
