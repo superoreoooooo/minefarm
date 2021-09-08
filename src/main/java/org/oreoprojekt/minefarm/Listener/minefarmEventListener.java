@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.oreoprojekt.minefarm.Minefarm;
 import org.oreoprojekt.minefarm.command.mineFarmChatCommand;
 import org.oreoprojekt.minefarm.domain.mineFarm;
-import org.oreoprojekt.minefarm.manager.mineFarmTxtManager;
 import org.oreoprojekt.minefarm.util.*;
 
 public class minefarmEventListener implements Listener {
@@ -39,7 +38,6 @@ public class minefarmEventListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        mineFarm mineFarm = this.plugin.mineFarmTxtManager.createInventory(player, "mailBox");
         scoreBoard.createBoard(player);
         scoreBoardTimer.timer(player, true);
         if (chatMode.getChatMode(player) == null) {

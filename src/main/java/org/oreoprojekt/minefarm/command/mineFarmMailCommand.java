@@ -76,7 +76,6 @@ public class mineFarmMailCommand implements CommandExecutor {
             Material type = Item.getType();
             int count = Item.getAmount();
             mailSendSystem.sendmail(player, target, type, meta, count, Item);
-
             player.getInventory().removeItem(Item);
         }
     }
