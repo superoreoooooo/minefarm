@@ -15,6 +15,7 @@ import org.oreoprojekt.minefarm.util.mineFarmMailAlarmSystem;
 import org.oreoprojekt.minefarm.util.mineFarmMailSendSystem;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class mineFarmMailCommand implements CommandExecutor {
 
@@ -40,14 +41,20 @@ public class mineFarmMailCommand implements CommandExecutor {
 
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("send")) {
-                if (Bukkit.getOnlinePlayers().toString().contains(args[1])) {
+                if (Bukkit.getOnlinePlayers().toString().contains(args[1]) || Arrays.toString(Bukkit.getOfflinePlayers()).contains(args[1])) {
                     Player target = Bukkit.getPlayer(args[1]);
-                    try {
-                        sendItem(player, target);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if (mailSendSystem.getCount(target) < 45) {
+                        try {
+                            sendItem(player, target);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return true;
                     }
-                    return true;
+                    else {
+                        player.sendMessage("해당 플레이어의 메일함이 꽉 찼습니다.");
+                        return false;
+                    }
                 }
                 else {
                     player.sendMessage("플레이어 이름을 입력해주세요.");

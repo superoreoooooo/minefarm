@@ -11,3 +11,5 @@ commands:
     aliases: [mail]
   우편함:
     aliases: [mailbox]
+  우편정리:
+    aliases: [mailclear, mailboxclear]
