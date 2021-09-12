@@ -53,22 +53,22 @@ public class mineFarmMailSendSystem {
         return cnt;
     }
 
-    public void sendmail(Player player, Player sender, Material type, ItemMeta meta, int itemcount, ItemStack item) throws IOException {
-        int mailcount = getCount(player);
+    public void sendmail(Player player, Player target, Material type, ItemMeta meta, int itemcount, ItemStack item) throws IOException {
+        int mailcount = getCount(target);
         boolean isget = false;
         if (meta == null) {
             player.sendMessage("오류");
             return;
         }
         String item1 = serialize(item);
-        plugin.data.getConfig().set("players_mails." + "player Name " + player.getUniqueId().toString() + ".mail." + mailcount + ".itemtype", type.toString());
-        plugin.data.getConfig().set("players_mails." + "player Name " + player.getUniqueId().toString() + ".mail." + mailcount + ".itemcount", itemcount);
-        plugin.data.getConfig().set("players_mails." + "player Name " + player.getUniqueId().toString() + ".mail." + mailcount + ".sentby", sender.getUniqueId().toString());
-        plugin.data.getConfig().set("players_mails." + "player Name " + player.getUniqueId().toString() + ".mail." + mailcount + ".isget", isget);
-        plugin.data.getConfig().set("Players_mailsToBase64." + player.getUniqueId().toString() + ".mails." + mailcount + ".toBASE64", item1);
-        addCount(player);
+        plugin.data.getConfig().set("players_mails." + "player Name " + target.getUniqueId().toString() + ".mail." + mailcount + ".itemtype", type.toString());
+        plugin.data.getConfig().set("players_mails." + "player Name " + target.getUniqueId().toString() + ".mail." + mailcount + ".itemcount", itemcount);
+        plugin.data.getConfig().set("players_mails." + "player Name " + target.getUniqueId().toString() + ".mail." + mailcount + ".sentby", player.getUniqueId().toString());
+        plugin.data.getConfig().set("players_mails." + "player Name " + target.getUniqueId().toString() + ".mail." + mailcount + ".isget", isget);
+        plugin.data.getConfig().set("Players_mailsToBase64." + target.getUniqueId().toString() + ".mails." + mailcount + ".toBASE64", item1);
+        addCount(target);
         //.sendMessage(String.valueOf(mailcount));
-        alarmSystem.alarm(player, sender);
+        alarmSystem.alarm(player, target);
         player.sendMessage(type.name() + "을 보냈습니다.");
     }
 
