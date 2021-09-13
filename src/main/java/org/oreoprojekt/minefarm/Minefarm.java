@@ -7,10 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.oreoprojekt.minefarm.Listener.mineFarmChatEventListener;
 import org.oreoprojekt.minefarm.Listener.mineFarmMailEventListener;
 import org.oreoprojekt.minefarm.Listener.minefarmEventListener;
-import org.oreoprojekt.minefarm.command.mineFarmChatCommand;
-import org.oreoprojekt.minefarm.command.mineFarmMailClearCommand;
-import org.oreoprojekt.minefarm.command.mineFarmMailCommand;
-import org.oreoprojekt.minefarm.command.mineFarmOpenMailCommand;
+import org.oreoprojekt.minefarm.command.*;
 import org.oreoprojekt.minefarm.manager.MineFarmMailSaveManager;
 import org.oreoprojekt.minefarm.manager.MineFarmYmlManager;
 import org.oreoprojekt.minefarm.util.mineFarmChatMode;
@@ -34,6 +31,7 @@ public final class Minefarm extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new minefarmEventListener(this), this);
         getServer().getPluginManager().registerEvents(new mineFarmMailEventListener(this), this);
         getServer().getPluginManager().registerEvents(new mineFarmChatEventListener(this), this);
+
         getCommand("cm").setExecutor(new mineFarmChatCommand(this));
         getCommand("우편").setExecutor(new mineFarmMailCommand(this));
         getCommand("우편함").setExecutor(new mineFarmOpenMailCommand(this));
