@@ -3,7 +3,6 @@ package org.oreoprojekt.minefarm.Listener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -11,13 +10,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.jetbrains.annotations.NotNull;
 import org.oreoprojekt.minefarm.Minefarm;
 import org.oreoprojekt.minefarm.util.mineFarmMailSendSystem;
 
@@ -46,7 +41,7 @@ public class mineFarmMailEventListener implements Listener {
 
         ItemStack window = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta itemMeta2 = window.getItemMeta();
-        itemMeta2.setDisplayName(" ");
+        itemMeta2.setDisplayName("ui");
         window.setItemMeta(itemMeta2);
 
         ItemStack remove = new ItemStack(Material.RED_STAINED_GLASS_PANE);
@@ -87,7 +82,7 @@ public class mineFarmMailEventListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) throws IOException {
         Player player = (Player) e.getWhoClicked();
         if (!(player.getOpenInventory().getTitle().contains("의 메일함"))) {
             return;
@@ -109,15 +104,42 @@ public class mineFarmMailEventListener implements Listener {
         e.setCancelled(true);
         ItemStack clickedItem = e.getCurrentItem();
         if (clickedItem == null || clickedItem.getType() == Material.AIR || clickedItem.getType() == Material.BARRIER) return;
-        if (clickedItem.getType() == Material.GREEN_STAINED_GLASS_PANE || clickedItem.getType() == Material.RED_STAINED_GLASS_PANE || clickedItem.getItemMeta().hasDisplayName()) {
-            if (clickedItem.getItemMeta().getDisplayName().equals("누르시면 우편함이 초기화 됩니다.")) {
-                mineFarmMailSendSystem.ClearMail(player);
-                return;
+        if (clickedItem.getType() == Material.GREEN_STAINED_GLASS_PANE || clickedItem.getType() == Material.RED_STAINED_GLASS_PANE || clickedItem.getType() == Material.BLACK_STAINED_GLASS_PANE) {
+            if (clickedItem.getItemMeta().hasDisplayName()) {
+                if (clickedItem.getItemMeta().getDisplayName().equals("누르시면 우편함이 초기화 됩니다.")) {
+                    mineFarmMailSendSystem.ClearMail(player);
+                    player.sendMessage("우편함이 초기화 되었습니다.");
+                    player.getOpenInventory().close();
+                    return;
+                }
+                if (clickedItem.getItemMeta().getDisplayName().equals("누르시면 우편함의 모든 아이템이 받아집니다.")) {
+                    int cnttt = 0;
+                    for (int i = 0; i < 45; i++) {
+                        if (!(mineFarmMailSendSystem.isGet(player, i))) {
+                            if (mineFarmMailSendSystem.getmail(player, i) != null) {
+                                player.getInventory().addItem(player.getOpenInventory().getItem(i));
+                                mineFarmMailSendSystem.setGet(player, i);
+                                cnttt++;
+                            }
+                        }
+                    }
+                    player.sendMessage("우편함에 있는 아이템을 모두 받았습니다. 총 " + cnttt + "개");
+                    mineFarmMailSendSystem.ClearMail(player);
+                    player.getOpenInventory().close();
+                    return;
+                }
+                if (clickedItem.getItemMeta().getDisplayName().equals("ui")) {
+                    return;
+                }
             }
-            if (clickedItem.getItemMeta().getDisplayName().equals("누르시면 우편함의 모든 아이템이 받아집니다.")) {
-                return;
+        }
+        if (clickedItem.getType() == Material.PLAYER_HEAD) {
+            if (clickedItem.getItemMeta().hasDisplayName()) {
+                if (clickedItem.getItemMeta().getDisplayName().equals(player.getName().toString())) {
+                    player.sendMessage("아마도 당신의 대가리일겁니다.");
+                    return;
+                }
             }
-            return;
         }
         player.getInventory().addItem(clickedItem);
         mineFarmMailSendSystem.setGet(player, e.getSlot());
