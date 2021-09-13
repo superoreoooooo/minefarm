@@ -8,7 +8,7 @@ import org.oreoprojekt.minefarm.Listener.mineFarmChatEventListener;
 import org.oreoprojekt.minefarm.Listener.mineFarmMailEventListener;
 import org.oreoprojekt.minefarm.Listener.minefarmEventListener;
 import org.oreoprojekt.minefarm.command.*;
-import org.oreoprojekt.minefarm.manager.MineFarmMailSaveManager;
+import org.oreoprojekt.minefarm.manager.MineFarmIslandYmlManager;
 import org.oreoprojekt.minefarm.manager.MineFarmYmlManager;
 import org.oreoprojekt.minefarm.util.mineFarmChatMode;
 import org.oreoprojekt.minefarm.util.mineFarmScoreBoard;
@@ -19,7 +19,7 @@ public final class Minefarm extends JavaPlugin {
     public mineFarmScoreBoardTimer scoreBoardTimer;
     public mineFarmScoreBoard scoreBoard;
     public MineFarmYmlManager data;
-    public MineFarmMailSaveManager mailSaveManager;
+    public MineFarmIslandYmlManager IslandManager;
     public mineFarmChatMode chatMode;
 
     minefarmEventListener eventListener = new minefarmEventListener(this);
@@ -41,7 +41,7 @@ public final class Minefarm extends JavaPlugin {
         this.scoreBoard = new mineFarmScoreBoard(this);
         this.scoreBoardTimer = new mineFarmScoreBoardTimer(this);
         this.chatMode = new mineFarmChatMode(this);
-        this.mailSaveManager = new MineFarmMailSaveManager(this);
+        this.IslandManager = new MineFarmIslandYmlManager(this);
 
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
             for (Player player : Bukkit.getOnlinePlayers()) {

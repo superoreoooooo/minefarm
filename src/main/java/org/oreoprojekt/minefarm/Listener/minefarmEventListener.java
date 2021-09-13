@@ -26,6 +26,7 @@ public class minefarmEventListener implements Listener {
     private mineFarmChatMode chatMode;
     private mineFarmExp exp;
     private mineFarmLevel level;
+    private mineFarmIslandUtil IslandUtil;
 
     private Minefarm plugin;
 
@@ -38,6 +39,7 @@ public class minefarmEventListener implements Listener {
         this.chatMode = new mineFarmChatMode(plugin);
         this.exp = new mineFarmExp(plugin);
         this.level = new mineFarmLevel(plugin);
+        this.IslandUtil = new mineFarmIslandUtil(plugin);
     }
 
     mineFarmScoreBoard scoreBoard = new mineFarmScoreBoard(plugin);
@@ -50,6 +52,13 @@ public class minefarmEventListener implements Listener {
         if (chatMode.getChatMode(player) == null) {
             chatMode.setChatMode(player, "All");
         }
+        Location Spawn = new Location(player.getWorld(), 0, 2, 0);
+        player.teleport(Spawn);
+        player.sendMessage(Spawn.toString() + "으로 이동되었습니당");
+        if (IslandUtil.haveIsland(player)) {
+            return;
+        }
+        IslandUtil.createIsland(player);
     }
 
     @EventHandler
