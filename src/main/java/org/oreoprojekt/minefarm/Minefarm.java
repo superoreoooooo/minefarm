@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.oreoprojekt.minefarm.Listener.mineFarmChatEventListener;
+import org.oreoprojekt.minefarm.Listener.mineFarmIslandResetEventListener;
 import org.oreoprojekt.minefarm.Listener.mineFarmMailEventListener;
 import org.oreoprojekt.minefarm.Listener.minefarmEventListener;
 import org.oreoprojekt.minefarm.command.*;
@@ -31,6 +32,7 @@ public final class Minefarm extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new minefarmEventListener(this), this);
         getServer().getPluginManager().registerEvents(new mineFarmMailEventListener(this), this);
         getServer().getPluginManager().registerEvents(new mineFarmChatEventListener(this), this);
+        getServer().getPluginManager().registerEvents(new mineFarmIslandResetEventListener(this), this);
 
         getCommand("cm").setExecutor(new mineFarmChatCommand(this));
         getCommand("우편").setExecutor(new mineFarmMailCommand(this));
@@ -54,7 +56,8 @@ public final class Minefarm extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {getServer().getConsoleSender().sendMessage(Prefix + ChatColor.RED + "MineFarm Plugin Off");
+    public void onDisable() {
+        getServer().getConsoleSender().sendMessage(Prefix + ChatColor.RED + "MineFarm Plugin Off");
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 scoreBoardTimer.timer(player, false);

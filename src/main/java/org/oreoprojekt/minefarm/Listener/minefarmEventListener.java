@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.oreoprojekt.minefarm.Minefarm;
 import org.oreoprojekt.minefarm.util.*;
@@ -67,5 +68,10 @@ public class minefarmEventListener implements Listener {
             cash.addCash(player, 50);
             exp.addExp(player, 33);
         }
+    }
+
+    @EventHandler
+    public void onMoveOnFarm(PlayerMoveEvent e) {
+        Player player = e.getPlayer();
     }
 }

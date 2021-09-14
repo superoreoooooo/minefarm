@@ -1,16 +1,11 @@
 package org.oreoprojekt.minefarm.util;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.boss.BossBar;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.oreoprojekt.minefarm.Minefarm;
 
 public class mineFarmIslandUtil {
     private final Minefarm plugin;
-
-    public BossBar bar;
 
     public mineFarmIslandUtil(Minefarm plugin) {
         this.plugin = plugin;
@@ -45,20 +40,53 @@ public class mineFarmIslandUtil {
         plugin.IslandManager.saveConfig();
     }
 
+    public void resetIsland(Player player) {
+        int[] origin = getIslandPosition(player);
+
+        int originX = origin[0];
+        int originY = origin[1];
+        int originZ = origin[2];
+
+        int innerOriginX = originX + 1440;
+        int innerOriginZ = originZ + 1440;
+        int changed = 0;
+
+        player.sendMessage(ChatColor.RED + "originX : " + originX);
+        player.sendMessage(ChatColor.RED + "originY : " + originY);
+        player.sendMessage(ChatColor.RED + "originY : " + originZ);
+        player.sendMessage(ChatColor.RED + "inner originX : " + innerOriginX);
+        player.sendMessage(ChatColor.RED + "inner originY : " + originY);
+        player.sendMessage(ChatColor.RED + "inner originZ : " + innerOriginZ);
+
+        Material block = Material.AIR;
+        Location ground = new Location(player.getWorld(), innerOriginX, 1, innerOriginZ);
+
+        for (int x = 0; x < 320; x++) {
+            for (int z = 0; z < 320; z++) {
+                for (int y = 2; y < 255; y++) {
+                    if (!(ground.getBlock().isEmpty())) {
+                        ground.getBlock().setType(block);
+                        changed++;
+                    }
+                    ground.set(innerOriginX + x, originY + y, innerOriginZ + z);
+                }
+            }
+        }
+        ground.getBlock().setType(block);
+        player.sendMessage("지우개 작동 완료");
+        player.sendMessage(changed + "개의 블록이 무로 돌아갔습니다");
+        int resetCnt = 0;
+        if (plugin.IslandManager.getConfig().contains("Islands." + player.getName() + ".resetCount")) {
+            resetCnt = plugin.IslandManager.getConfig().getInt("Islands." + player.getName() + ".resetCount");
+        }
+        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".resetCount", resetCnt);
+        plugin.IslandManager.saveConfig();
+        setGround(player);
+    }
 
     public boolean isInOwnIsland(Player player) {
         int[] range = getIslandPosition(player); //1번째는 x , 2번째는 z y는 무시
-
-        if (player.getLocation().getX() >= range[0] && player.getLocation().getX() <= range[0] + 3200) {
-            if (player.getLocation().getZ() >= range[2] && player.getLocation().getZ() <= range[2] + 3200) {
-                player.sendMessage("테스트용");
-                return true;
-            }
-            return false;
-        }
-        else {
-            return false;
-        }
+        return player.getLocation().getX() >= range[0] && player.getLocation().getX() <= range[0] + 3200 && player.getLocation().getZ() >= range[2] && player.getLocation().getZ() <= range[2] + 3200;
     }
 
     public boolean isHaveIsland(Player player) {
@@ -73,6 +101,7 @@ public class mineFarmIslandUtil {
         int islandCnt = IslandCount();
 
         int distanceZ = islandCnt * 3200;
+        int distanceY = 1;
         int distanceX = 0;
 
         if (islandCnt >= 9000) {
@@ -96,23 +125,28 @@ public class mineFarmIslandUtil {
             distanceX = 16000;
         }
 
+        String defaultName = player.getName() + "의 섬";
+
         plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".locationX", distanceX);
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".locationZ", distanceZ);
+        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".locationY", distanceY);
         plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".locationZ", distanceZ);
 
         plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".spawnX", distanceX + 1600);
         plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".spawnY", 3);
         plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".spawnZ", distanceZ + 1600);
+        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".resetCount", 0);
+        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".IslandName", defaultName);
 
         plugin.IslandManager.getConfig().set(".count", IslandCount() + 1);
 
         plugin.IslandManager.saveConfig();
 
         setBorder(player);
-        setFlatWorld(player);
+        setGround(player);
 
         int homeX = distanceX + 1600;
         int homeZ = distanceZ + 1600;
+
         player.sendMessage(homeX + ", " + homeZ + " 에 당신의 섬이 생성되었습니다.");
     }
 
@@ -148,7 +182,7 @@ public class mineFarmIslandUtil {
         return loc;
     }
 
-    public void setFlatWorld(Player player) {
+    public void setGround(Player player) {
         int[] origin = getIslandPosition(player);
 
         int originX = origin[0];
@@ -158,9 +192,9 @@ public class mineFarmIslandUtil {
         int innerOriginZ = originZ + 1440;
 
         Bukkit.broadcastMessage("originX : " + originX);
-        Bukkit.broadcastMessage("originY : " + originZ);
+        Bukkit.broadcastMessage("originZ : " + originZ);
         Bukkit.broadcastMessage("inner originX : " + innerOriginX);
-        Bukkit.broadcastMessage("inner originY : " + innerOriginZ);
+        Bukkit.broadcastMessage("inner originZ : " + innerOriginZ);
 
         Material block = Material.GRASS_BLOCK;
         Location ground = new Location(player.getWorld(), innerOriginX, 1, innerOriginZ);
