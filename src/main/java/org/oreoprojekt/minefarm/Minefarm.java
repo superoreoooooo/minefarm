@@ -36,6 +36,7 @@ public final class Minefarm extends JavaPlugin {
         getCommand("우편").setExecutor(new mineFarmMailCommand(this));
         getCommand("우편함").setExecutor(new mineFarmOpenMailCommand(this));
         getCommand("우편정리").setExecutor(new mineFarmMailClearCommand(this));
+        getCommand("섬").setExecutor(new mineFarmIslandCommand(this));
 
         this.data = new MineFarmYmlManager(this);
         this.scoreBoard = new mineFarmScoreBoard(this);

@@ -1,21 +1,13 @@
 package org.oreoprojekt.minefarm.Listener;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.oreoprojekt.minefarm.Minefarm;
-import org.oreoprojekt.minefarm.command.mineFarmChatCommand;
 import org.oreoprojekt.minefarm.util.*;
 
 public class minefarmEventListener implements Listener {
@@ -52,10 +44,10 @@ public class minefarmEventListener implements Listener {
         if (chatMode.getChatMode(player) == null) {
             chatMode.setChatMode(player, "All");
         }
-        Location Spawn = new Location(player.getWorld(), 0, 2, 0);
+        Location Spawn = new Location(player.getWorld(), -10000, 2, -10000);
         player.teleport(Spawn);
-        player.sendMessage(Spawn.toString() + "으로 이동되었습니당");
-        if (IslandUtil.haveIsland(player)) {
+        player.sendMessage(Spawn+ "스폰으로 이동되었습니다.");
+        if (IslandUtil.isHaveIsland(player)) {
             return;
         }
         IslandUtil.createIsland(player);
