@@ -2,6 +2,7 @@ package org.oreoprojekt.minefarm.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -57,9 +58,6 @@ public class mineFarmIslandCommand implements CommandExecutor {
                 Bukkit.getPluginManager().callEvent(openMailBox1);
                 return true;
             }
-            if (args[0].equals("저장") || args[0].equals("save")) {
-                return true;
-            }
             else {
                 player.sendMessage("잘못된 접근입니다.");
                 return false;
@@ -68,6 +66,21 @@ public class mineFarmIslandCommand implements CommandExecutor {
         if (args.length == 2) {
             if (args[0].equals("이름") || args[0].equals("dlfma")) {
                 islandUtil.setIslandName(player, args[1]);
+                return true;
+            }
+            if (args[0].equals("날씨") || args[0].equals("wt")) {
+                if (args[1].equals("clear")) {
+                    islandUtil.setIslandWeather(player, false);
+                    player.sendMessage("날씨를 맑음으로 선택하였습니다.");
+                }
+                else if (args[1].equals("rain")) {
+                    islandUtil.setIslandWeather(player, true);
+                    player.sendMessage("날씨를 비로 선택하였습니다.");
+                }
+                else {
+                    player.sendMessage("잘못된 접근입니다.");
+                    return false;
+                }
                 return true;
             }
             else {

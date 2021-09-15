@@ -1,10 +1,9 @@
 package org.oreoprojekt.minefarm.util;
 
 import org.bukkit.*;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.oreoprojekt.minefarm.Minefarm;
-
-import java.util.UUID;
 
 public class mineFarmIslandUtil {
     private final Minefarm plugin;
@@ -13,6 +12,31 @@ public class mineFarmIslandUtil {
         this.plugin = plugin;
     }
 
+    public void setPlayerWeather(Player player) {
+        for (int count = 1; count <= IslandCount(); count++) {
+            int[] origin = new int[3];
+            origin[0] = plugin.islandManager.getConfig().getInt("island." + count + ".locationX");
+            origin[1] = plugin.islandManager.getConfig().getInt("island." + count + ".locationY");
+            origin[2] = plugin.islandManager.getConfig().getInt("island." + count + ".locationZ");
+            if (player.getLocation().getX() >= origin[0] && player.getLocation().getX() <= origin[0] + 3200 && player.getLocation().getZ() >= origin[2] && player.getLocation().getZ() <= origin[2] + 3200) {
+                if (plugin.islandManager.getConfig().getBoolean("island." + count + ".isRain")) {
+                    player.setPlayerWeather(WeatherType.DOWNFALL);
+                    return;
+                }
+                else {
+                    player.setPlayerWeather(WeatherType.CLEAR);
+                }
+            }
+            else {
+                player.setPlayerWeather(WeatherType.CLEAR);
+            }
+        }
+    }
+
+    public void setIslandWeather(Player player, boolean isRain) { //true 이면 비가옴
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".isRain", isRain);
+        plugin.islandManager.saveConfig();
+    }
 
     public void setIslandSpawn(Player player) {
         if (!(isInOwnIsland(player))) {
@@ -40,13 +64,10 @@ public class mineFarmIslandUtil {
             origin[1] = plugin.islandManager.getConfig().getInt("island." + count + ".locationY");
             origin[2] = plugin.islandManager.getConfig().getInt("island." + count + ".locationZ");
             if (player.getLocation().getX() >= origin[0] && player.getLocation().getX() <= origin[0] + 3200 && player.getLocation().getZ() >= origin[2] && player.getLocation().getZ() <= origin[2] + 3200) {
-                String owner = plugin.islandManager.getConfig().getString("island." + count + ".player");
-                //player.sendMessage(owner + "님의 섬 어쩌고");
-                return owner;
+                return plugin.islandManager.getConfig().getString("island." + count + ".player");
             }
         }
-        //player.sendMessage("존재하지 않는 섬 주인입니다.");
-        return null;
+        return "존재하지 않는 섬입니다.";
     }
 
     public String getIslandName(Player player) {
@@ -112,6 +133,9 @@ public class mineFarmIslandUtil {
         plugin.islandManager.getConfig().set("island." + getId(player) + ".locationY", distanceY);
         plugin.islandManager.getConfig().set("island." + getId(player) + ".locationZ", distanceZ);
 
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".isRain", false);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".biome", Biome.THE_VOID);
+
         plugin.islandManager.getConfig().set("island." + getId(player) + ".spawnX", distanceX + 1600);
         plugin.islandManager.getConfig().set("island." + getId(player) + ".spawnY", 3);
         plugin.islandManager.getConfig().set("island." + getId(player) + ".spawnZ", distanceZ + 1600);
@@ -163,6 +187,7 @@ public class mineFarmIslandUtil {
         }
         return loc;
     }
+
 
     public void setGround(Player player) {
         int[] origin = getIslandPosition(player);
@@ -254,7 +279,7 @@ public class mineFarmIslandUtil {
 
         player.sendMessage(ChatColor.RED + "originX : " + originX);
         player.sendMessage(ChatColor.RED + "originY : " + originY);
-        player.sendMessage(ChatColor.RED + "originY : " + originZ);
+        player.sendMessage(ChatColor.RED + "originZ : " + originZ);
         player.sendMessage(ChatColor.RED + "inner originX : " + innerOriginX);
         player.sendMessage(ChatColor.RED + "inner originY : " + originY);
         player.sendMessage(ChatColor.RED + "inner originZ : " + innerOriginZ);
@@ -266,6 +291,7 @@ public class mineFarmIslandUtil {
             for (int z = 0; z < 320; z++) {
                 for (int y = 1; y < 255; y++) {
                     if (!(ground.getBlock().isEmpty())) {
+                        ground.getBlock().setBiome(Biome.THE_VOID);
                         ground.getBlock().setType(block);
                         changed++;
                     }

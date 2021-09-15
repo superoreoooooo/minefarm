@@ -1,6 +1,7 @@
 package org.oreoprojekt.minefarm.Listener;
 
 import org.bukkit.Location;
+import org.bukkit.WeatherType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,7 +9,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.oreoprojekt.minefarm.Minefarm;
 import org.oreoprojekt.minefarm.util.*;
 
@@ -20,7 +20,7 @@ public class minefarmEventListener implements Listener {
     private mineFarmChatMode chatMode;
     private mineFarmExp exp;
     private mineFarmLevel level;
-    private mineFarmIslandUtil IslandUtil;
+    private mineFarmIslandUtil islandUtil;
 
     private Minefarm plugin;
 
@@ -33,7 +33,7 @@ public class minefarmEventListener implements Listener {
         this.chatMode = new mineFarmChatMode(plugin);
         this.exp = new mineFarmExp(plugin);
         this.level = new mineFarmLevel(plugin);
-        this.IslandUtil = new mineFarmIslandUtil(plugin);
+        this.islandUtil = new mineFarmIslandUtil(plugin);
     }
 
     mineFarmScoreBoard scoreBoard = new mineFarmScoreBoard(plugin);
@@ -49,10 +49,11 @@ public class minefarmEventListener implements Listener {
         Location Spawn = new Location(player.getWorld(), -10000, 2, -10000);
         player.teleport(Spawn);
         player.sendMessage("스폰 지점으로 이동되었습니다.");
-        if (IslandUtil.isHaveIsland(player)) {
+        player.setPlayerWeather(WeatherType.CLEAR);
+        if (islandUtil.isHaveIsland(player)) {
             return;
         }
-        IslandUtil.createIsland(player);
+        islandUtil.createIsland(player);
     }
 
     @EventHandler
@@ -69,5 +70,11 @@ public class minefarmEventListener implements Listener {
             cash.addCash(player, 50);
             exp.addExp(player, 33);
         }
+    }
+
+    @EventHandler
+    public void onMove(PlayerMoveEvent e) {
+        Player player = e.getPlayer();
+        islandUtil.setPlayerWeather(player);
     }
 }
