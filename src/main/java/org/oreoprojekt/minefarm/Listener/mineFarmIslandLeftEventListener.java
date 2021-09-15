@@ -2,6 +2,7 @@ package org.oreoprojekt.minefarm.Listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -18,32 +19,32 @@ import org.oreoprojekt.minefarm.util.mineFarmIslandUtil;
 
 import java.util.Arrays;
 
-public class mineFarmIslandResetEventListener implements Listener {
+public class mineFarmIslandLeftEventListener implements Listener {
 
     private mineFarmIslandUtil util;
     private Minefarm plugin;
     private Inventory inv;
 
-    String resetTXT = ChatColor.RED + "초기화(되돌릴 수 없습니다!)";
+    String leftTXT = ChatColor.RED + "떠나기";
     String cancelTXT = ChatColor.GREEN + "취소";
 
-    public mineFarmIslandResetEventListener(Minefarm plugin) {
+    public mineFarmIslandLeftEventListener(Minefarm plugin) {
         this.plugin = plugin;
         this.util = new mineFarmIslandUtil(plugin);
 
-        inv = Bukkit.createInventory(null, 9, "초기화");
+        inv = Bukkit.createInventory(null, 9, "섬 떠나기");
 
-        ItemStack reset = new ItemStack(Material.NETHER_STAR, 1);
-        ItemMeta resetMeta = reset.getItemMeta();
-        resetMeta.setDisplayName(resetTXT);
-        resetMeta.setLore(Arrays.asList(ChatColor.RED + "초기화 후에는 복구 불가능합니다."));
-        reset.setItemMeta(resetMeta);
-        inv.setItem(2, reset);
+        ItemStack left = new ItemStack(Material.NETHER_STAR, 1);
+        ItemMeta leftMeta = left.getItemMeta();
+        leftMeta.setDisplayName(leftTXT);
+        leftMeta.setLore(Arrays.asList(ChatColor.RED + "떠난 후에는 초대를 받아야만 돌아갈 수 있습니다."));
+        left.setItemMeta(leftMeta);
+        inv.setItem(2, left);
 
         ItemStack cancel = new ItemStack(Material.BARRIER, 1);
         ItemMeta cancelMeta = cancel.getItemMeta();
         cancelMeta.setDisplayName(cancelTXT);
-        cancelMeta.setLore(Arrays.asList(ChatColor.GREEN + "초기화 작업을 취소합니다."));
+        cancelMeta.setLore(Arrays.asList(ChatColor.GREEN + "떠나기를 취소합니다."));
         cancel.setItemMeta(cancelMeta);
         inv.setItem(6, cancel);
     }
@@ -82,14 +83,14 @@ public class mineFarmIslandResetEventListener implements Listener {
         if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
         if (clickedItem.getType() == Material.BARRIER || clickedItem.getType() == Material.NETHER_STAR) {
             if (clickedItem.getItemMeta().hasDisplayName()) {
-                if (clickedItem.getItemMeta().getDisplayName().equals(resetTXT)) {
-                    player.sendMessage("섬이 초기화 되었습니다.");
+                if (clickedItem.getItemMeta().getDisplayName().equals(leftTXT)) {
+                    Location Spawn = new Location(player.getWorld(), -10000, 2, -10000);
+                    player.teleport(Spawn);
+                    player.sendMessage("섬을 떠났습니다.");
                     player.getOpenInventory().close();
-                    util.resetIsland(player);
                     return;
                 }
                 if (clickedItem.getItemMeta().getDisplayName().equals(cancelTXT)) {
-                    player.sendMessage("초기화가 취소 되었습니다.");
                     player.getOpenInventory().close();
                 }
             }

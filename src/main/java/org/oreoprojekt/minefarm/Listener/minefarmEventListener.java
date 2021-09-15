@@ -8,6 +8,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.oreoprojekt.minefarm.Minefarm;
 import org.oreoprojekt.minefarm.util.*;
 
@@ -47,7 +48,7 @@ public class minefarmEventListener implements Listener {
         }
         Location Spawn = new Location(player.getWorld(), -10000, 2, -10000);
         player.teleport(Spawn);
-        player.sendMessage(Spawn+ "스폰으로 이동되었습니다.");
+        player.sendMessage("스폰 지점으로 이동되었습니다.");
         if (IslandUtil.isHaveIsland(player)) {
             return;
         }
@@ -68,10 +69,5 @@ public class minefarmEventListener implements Listener {
             cash.addCash(player, 50);
             exp.addExp(player, 33);
         }
-    }
-
-    @EventHandler
-    public void onMoveOnFarm(PlayerMoveEvent e) {
-        Player player = e.getPlayer();
     }
 }

@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.oreoprojekt.minefarm.Listener.mineFarmIslandLeftEventListener;
 import org.oreoprojekt.minefarm.Listener.mineFarmIslandResetEventListener;
 import org.oreoprojekt.minefarm.Minefarm;
 import org.oreoprojekt.minefarm.util.mineFarmIslandUtil;
@@ -27,6 +28,7 @@ public class mineFarmIslandCommand implements CommandExecutor {
         }
         Player player = (Player) sender;
         mineFarmIslandResetEventListener.OpenMailBox openMailBox = new mineFarmIslandResetEventListener.OpenMailBox(player);
+        mineFarmIslandLeftEventListener.OpenMailBox openMailBox1 = new mineFarmIslandLeftEventListener.OpenMailBox(player);
 
         if (args.length == 0) {
             int[] spawn = islandUtil.getIslandSpawn(player);
@@ -44,11 +46,18 @@ public class mineFarmIslandCommand implements CommandExecutor {
                 return true;
             }
             if (args[0].equals("이름") || args[0].equals("dlfma")) {
-                player.sendMessage("섬이름 : " + "!아직미구현");
+                player.sendMessage(islandUtil.getIslandName(player));
                 return true;
             }
             if (args[0].equals("초기화") || args[0].equals("reset")) {
                 Bukkit.getPluginManager().callEvent(openMailBox);
+                return true;
+            }
+            if (args[0].equals("떠나기") || args[0].equals("left")) {
+                Bukkit.getPluginManager().callEvent(openMailBox1);
+                return true;
+            }
+            if (args[0].equals("저장") || args[0].equals("save")) {
                 return true;
             }
             else {

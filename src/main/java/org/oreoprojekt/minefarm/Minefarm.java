@@ -4,14 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.oreoprojekt.minefarm.Listener.mineFarmChatEventListener;
-import org.oreoprojekt.minefarm.Listener.mineFarmIslandResetEventListener;
-import org.oreoprojekt.minefarm.Listener.mineFarmMailEventListener;
-import org.oreoprojekt.minefarm.Listener.minefarmEventListener;
+import org.oreoprojekt.minefarm.Listener.*;
 import org.oreoprojekt.minefarm.command.*;
 import org.oreoprojekt.minefarm.manager.MineFarmIslandYmlManager;
 import org.oreoprojekt.minefarm.manager.MineFarmYmlManager;
 import org.oreoprojekt.minefarm.util.mineFarmChatMode;
+import org.oreoprojekt.minefarm.util.mineFarmIslandUtil;
 import org.oreoprojekt.minefarm.util.mineFarmScoreBoard;
 import org.oreoprojekt.minefarm.util.mineFarmScoreBoardTimer;
 
@@ -20,8 +18,9 @@ public final class Minefarm extends JavaPlugin {
     public mineFarmScoreBoardTimer scoreBoardTimer;
     public mineFarmScoreBoard scoreBoard;
     public MineFarmYmlManager data;
-    public MineFarmIslandYmlManager IslandManager;
+    public MineFarmIslandYmlManager islandManager;
     public mineFarmChatMode chatMode;
+    public mineFarmIslandUtil islandUtil;
 
     minefarmEventListener eventListener = new minefarmEventListener(this);
     public static String Prefix = ChatColor.WHITE + "[" + ChatColor.GREEN + "MineFarm" + ChatColor.WHITE + "]";
@@ -33,6 +32,7 @@ public final class Minefarm extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new mineFarmMailEventListener(this), this);
         getServer().getPluginManager().registerEvents(new mineFarmChatEventListener(this), this);
         getServer().getPluginManager().registerEvents(new mineFarmIslandResetEventListener(this), this);
+        getServer().getPluginManager().registerEvents(new mineFarmIslandLeftEventListener(this), this);
 
         getCommand("cm").setExecutor(new mineFarmChatCommand(this));
         getCommand("우편").setExecutor(new mineFarmMailCommand(this));
@@ -44,7 +44,8 @@ public final class Minefarm extends JavaPlugin {
         this.scoreBoard = new mineFarmScoreBoard(this);
         this.scoreBoardTimer = new mineFarmScoreBoardTimer(this);
         this.chatMode = new mineFarmChatMode(this);
-        this.IslandManager = new MineFarmIslandYmlManager(this);
+        this.islandManager = new MineFarmIslandYmlManager(this);
+        this.islandUtil = new mineFarmIslandUtil(this);
 
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
             for (Player player : Bukkit.getOnlinePlayers()) {

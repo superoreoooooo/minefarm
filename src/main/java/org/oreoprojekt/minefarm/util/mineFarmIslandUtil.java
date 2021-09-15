@@ -4,6 +4,8 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.oreoprojekt.minefarm.Minefarm;
 
+import java.util.UUID;
+
 public class mineFarmIslandUtil {
     private final Minefarm plugin;
 
@@ -11,9 +13,6 @@ public class mineFarmIslandUtil {
         this.plugin = plugin;
     }
 
-    public String getIslandName(Player player) {
-        return plugin.IslandManager.getConfig().getString("Islands." + player.getName() + ".IslandName");
-    }
 
     public void setIslandSpawn(Player player) {
         if (!(isInOwnIsland(player))) {
@@ -25,63 +24,44 @@ public class mineFarmIslandUtil {
         int spawnY = (int) player.getLocation().getY();
         int spawnZ = (int) player.getLocation().getZ();
 
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".spawnX", spawnX);
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".spawnY", spawnY);
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".spawnZ", spawnZ);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".spawnX", spawnX);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".spawnY", spawnY);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".spawnZ", spawnZ);
 
-        plugin.IslandManager.saveConfig();
+        plugin.islandManager.saveConfig();
 
         player.sendMessage("스폰 지점이 등록되었습니다.");
     }
 
-    public void setIslandName(Player player, String name) {
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".IslandName", name);
-
-        plugin.IslandManager.saveConfig();
-    }
-
-    public void resetIsland(Player player) {
-        int[] origin = getIslandPosition(player);
-
-        int originX = origin[0];
-        int originY = origin[1];
-        int originZ = origin[2];
-
-        int innerOriginX = originX + 1440;
-        int innerOriginZ = originZ + 1440;
-        int changed = 0;
-
-        player.sendMessage(ChatColor.RED + "originX : " + originX);
-        player.sendMessage(ChatColor.RED + "originY : " + originY);
-        player.sendMessage(ChatColor.RED + "originY : " + originZ);
-        player.sendMessage(ChatColor.RED + "inner originX : " + innerOriginX);
-        player.sendMessage(ChatColor.RED + "inner originY : " + originY);
-        player.sendMessage(ChatColor.RED + "inner originZ : " + innerOriginZ);
-
-        Material block = Material.AIR;
-        Location ground = new Location(player.getWorld(), innerOriginX, 1, innerOriginZ);
-
-        for (int x = 0; x < 320; x++) {
-            for (int z = 0; z < 320; z++) {
-                for (int y = 2; y < 255; y++) {
-                    if (!(ground.getBlock().isEmpty())) {
-                        ground.getBlock().setType(block);
-                        changed++;
-                    }
-                    ground.set(innerOriginX + x, originY + y, innerOriginZ + z);
-                }
+    public String getIslandOwner(Player player) {
+        for (int count = 1; count <= IslandCount(); count++) {
+            int[] origin = new int[3];
+            origin[0] = plugin.islandManager.getConfig().getInt("island." + count + ".locationX");
+            origin[1] = plugin.islandManager.getConfig().getInt("island." + count + ".locationY");
+            origin[2] = plugin.islandManager.getConfig().getInt("island." + count + ".locationZ");
+            if (player.getLocation().getX() >= origin[0] && player.getLocation().getX() <= origin[0] + 3200 && player.getLocation().getZ() >= origin[2] && player.getLocation().getZ() <= origin[2] + 3200) {
+                String owner = plugin.islandManager.getConfig().getString("island." + count + ".player");
+                //player.sendMessage(owner + "님의 섬 어쩌고");
+                return owner;
             }
         }
-        ground.getBlock().setType(block);
-        player.sendMessage("지우개 작동 완료");
-        player.sendMessage(changed + "개의 블록이 무로 돌아갔습니다");
-        int resetCnt = 0;
-        if (plugin.IslandManager.getConfig().contains("Islands." + player.getName() + ".resetCount")) {
-            resetCnt = plugin.IslandManager.getConfig().getInt("Islands." + player.getName() + ".resetCount");
-        }
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".resetCount", resetCnt);
-        plugin.IslandManager.saveConfig();
-        setGround(player);
+        //player.sendMessage("존재하지 않는 섬 주인입니다.");
+        return null;
+    }
+
+    public String getIslandName(Player player) {
+        int islandNum = plugin.islandManager.getConfig().getInt("player." + getIslandOwner(player));
+        return plugin.islandManager.getConfig().getString("island." + islandNum + ".IslandName");
+    }
+
+    public void setIslandName(Player player, String name) {
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".IslandName", name);
+        plugin.islandManager.saveConfig();
+        player.sendMessage("섬의 이름이" + name + "으로 변경되었습니다.");
+    }
+
+    public int getId(OfflinePlayer player) {
+        return plugin.islandManager.getConfig().getInt("player." + player.getName());
     }
 
     public boolean isInOwnIsland(Player player) {
@@ -90,7 +70,7 @@ public class mineFarmIslandUtil {
     }
 
     public boolean isHaveIsland(Player player) {
-        if (plugin.IslandManager.getConfig().contains("Islands." + player.getName())) {
+        if (plugin.islandManager.getConfig().contains("player." + player.getName())) {
             player.sendMessage("섬이 이미 존재합니다.");
             return true;
         }
@@ -98,48 +78,50 @@ public class mineFarmIslandUtil {
     }
 
     public void createIsland(Player player) {
-        int islandCnt = IslandCount();
 
-        int distanceZ = islandCnt * 3200;
+        int distanceZ = IslandCount() * 3200;
         int distanceY = 1;
         int distanceX = 0;
 
-        if (islandCnt >= 9000) {
-            distanceZ = (islandCnt - 9000) * 3200;
+        if (IslandCount() >= 9000) {
+            distanceZ = (IslandCount() - 9000) * 3200;
             distanceX = 3200;
         }
-        if (islandCnt >= 18000) {
-            distanceZ = (islandCnt - 18000) * 3200;
+        if (IslandCount() >= 18000) {
+            distanceZ = (IslandCount() - 18000) * 3200;
             distanceX = 6400;
         }
-        if (islandCnt >= 27000) {
-            distanceZ = (islandCnt - 27000) * 3200;
+        if (IslandCount() >= 27000) {
+            distanceZ = (IslandCount() - 27000) * 3200;
             distanceX = 9600;
         }
-        if (islandCnt >= 36000) {
-            distanceZ = (islandCnt - 36000) * 3200;
+        if (IslandCount() >= 36000) {
+            distanceZ = (IslandCount() - 36000) * 3200;
             distanceX = 12800;
         }
-        if (islandCnt >= 45000) {
-            distanceZ = (islandCnt - 45000) * 3200;
+        if (IslandCount() >= 45000) {
+            distanceZ = (IslandCount() - 45000) * 3200;
             distanceX = 16000;
         }
 
-        String defaultName = player.getName() + "의 섬";
+        String def = "unknown";
 
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".locationX", distanceX);
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".locationY", distanceY);
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".locationZ", distanceZ);
+        plugin.islandManager.getConfig().set("player." + player.getName(), IslandCount() + 1);
 
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".spawnX", distanceX + 1600);
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".spawnY", 3);
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".spawnZ", distanceZ + 1600);
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".resetCount", 0);
-        plugin.IslandManager.getConfig().set("Islands." + player.getName() + ".IslandName", defaultName);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".locationX", distanceX);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".locationY", distanceY);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".locationZ", distanceZ);
 
-        plugin.IslandManager.getConfig().set(".count", IslandCount() + 1);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".spawnX", distanceX + 1600);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".spawnY", 3);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".spawnZ", distanceZ + 1600);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".resetCount", 0);
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".player", player.getName());
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".IslandName", def);
 
-        plugin.IslandManager.saveConfig();
+        plugin.islandManager.getConfig().set(".count", IslandCount() + 1);
+
+        plugin.islandManager.saveConfig();
 
         setBorder(player);
         setGround(player);
@@ -151,33 +133,33 @@ public class mineFarmIslandUtil {
     }
 
     public int IslandCount() {
-        return plugin.IslandManager.getConfig().getInt("count");
+        return plugin.islandManager.getConfig().getInt("count");
     }
 
     public int[] getIslandPosition(Player player) {
         int[] loc = new int[3];
-        if (plugin.IslandManager.getConfig().contains("Islands." + player.getName() + ".locationX")) {
-            loc[0] = plugin.IslandManager.getConfig().getInt("Islands." + player.getName() + ".locationX");
+        if (plugin.islandManager.getConfig().contains("island." + getId(player) + ".locationX")) {
+            loc[0] = plugin.islandManager.getConfig().getInt("island." + getId(player) + ".locationX");
         }
-        if (plugin.IslandManager.getConfig().contains("Islands." + player.getName() + ".locationY")) {
-            loc[1] = plugin.IslandManager.getConfig().getInt("Islands." + player.getName() + ".locationY");
+        if (plugin.islandManager.getConfig().contains("island." + getId(player) + ".locationY")) {
+            loc[1] = plugin.islandManager.getConfig().getInt("island." + getId(player) + ".locationY");
         }
-        if (plugin.IslandManager.getConfig().contains("Islands." + player.getName() + ".locationZ")) {
-            loc[2] = plugin.IslandManager.getConfig().getInt("Islands." + player.getName() + ".locationZ");
+        if (plugin.islandManager.getConfig().contains("island." + getId(player) + ".locationZ")) {
+            loc[2] = plugin.islandManager.getConfig().getInt("island." + getId(player) + ".locationZ");
         }
         return loc;
     }
 
     public int[] getIslandSpawn(Player player) {
         int[] loc = new int[3];
-        if (plugin.IslandManager.getConfig().contains("Islands." + player.getName() + ".spawnX")) {
-            loc[0] = plugin.IslandManager.getConfig().getInt("Islands." + player.getName() + ".spawnX");
+        if (plugin.islandManager.getConfig().contains("island." + getId(player) + ".spawnX")) {
+            loc[0] = plugin.islandManager.getConfig().getInt("island." + getId(player) + ".spawnX");
         }
-        if (plugin.IslandManager.getConfig().contains("Islands." + player.getName() + ".spawnY")) {
-            loc[1] = plugin.IslandManager.getConfig().getInt("Islands." + player.getName() + ".spawnY");
+        if (plugin.islandManager.getConfig().contains("island." + getId(player) + ".spawnY")) {
+            loc[1] = plugin.islandManager.getConfig().getInt("island." + getId(player) + ".spawnY");
         }
-        if (plugin.IslandManager.getConfig().contains("Islands." + player.getName() + ".spawnZ")) {
-            loc[2] = plugin.IslandManager.getConfig().getInt("Islands." + player.getName() + ".spawnZ");
+        if (plugin.islandManager.getConfig().contains("island." + getId(player) + ".spawnZ")) {
+            loc[2] = plugin.islandManager.getConfig().getInt("island." + getId(player) + ".spawnZ");
         }
         return loc;
     }
@@ -257,5 +239,49 @@ public class mineFarmIslandUtil {
             }
         }
         ground.getBlock().setType(block);
+    }
+
+    public void resetIsland(Player player) {
+        int[] origin = getIslandPosition(player);
+
+        int originX = origin[0];
+        int originY = origin[1];
+        int originZ = origin[2];
+
+        int innerOriginX = originX + 1440;
+        int innerOriginZ = originZ + 1440;
+        int changed = 0;
+
+        player.sendMessage(ChatColor.RED + "originX : " + originX);
+        player.sendMessage(ChatColor.RED + "originY : " + originY);
+        player.sendMessage(ChatColor.RED + "originY : " + originZ);
+        player.sendMessage(ChatColor.RED + "inner originX : " + innerOriginX);
+        player.sendMessage(ChatColor.RED + "inner originY : " + originY);
+        player.sendMessage(ChatColor.RED + "inner originZ : " + innerOriginZ);
+
+        Material block = Material.AIR;
+        Location ground = new Location(player.getWorld(), innerOriginX, 1, innerOriginZ);
+
+        for (int x = 0; x < 320; x++) {
+            for (int z = 0; z < 320; z++) {
+                for (int y = 1; y < 255; y++) {
+                    if (!(ground.getBlock().isEmpty())) {
+                        ground.getBlock().setType(block);
+                        changed++;
+                    }
+                    ground.set(innerOriginX + x, originY + y, innerOriginZ + z);
+                }
+            }
+        }
+        ground.getBlock().setType(block);
+        player.sendMessage("지우개 작동 완료");
+        player.sendMessage(changed + "개의 블록이 무로 돌아갔습니다");
+        int resetCnt = 0;
+        if (plugin.islandManager.getConfig().contains("island." + getId(player) + ".resetCount")) {
+            resetCnt = plugin.islandManager.getConfig().getInt("island." + getId(player) + ".resetCount");
+        }
+        plugin.islandManager.getConfig().set("island." + getId(player) + ".resetCount", resetCnt + 1);
+        plugin.islandManager.saveConfig();
+        setGround(player);
     }
 }
