@@ -16,3 +16,5 @@ commands:
     aliases: [mailclear, mailboxclear]
   섬:
     aliases: [tja]
+  스폰:
+    aliases: [spawn]

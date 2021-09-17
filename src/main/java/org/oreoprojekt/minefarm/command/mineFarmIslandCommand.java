@@ -2,11 +2,11 @@ package org.oreoprojekt.minefarm.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.oreoprojekt.minefarm.Listener.mineFarmInfoEventListener;
 import org.oreoprojekt.minefarm.Listener.mineFarmIslandLeftEventListener;
 import org.oreoprojekt.minefarm.Listener.mineFarmIslandResetEventListener;
 import org.oreoprojekt.minefarm.Minefarm;
@@ -30,6 +30,7 @@ public class mineFarmIslandCommand implements CommandExecutor {
         Player player = (Player) sender;
         mineFarmIslandResetEventListener.OpenMailBox openMailBox = new mineFarmIslandResetEventListener.OpenMailBox(player);
         mineFarmIslandLeftEventListener.OpenMailBox openMailBox1 = new mineFarmIslandLeftEventListener.OpenMailBox(player);
+        mineFarmInfoEventListener.openIslandConfig openIslandConfig = new mineFarmInfoEventListener.openIslandConfig(player);
 
         if (args.length == 0) {
             int[] spawn = islandUtil.getIslandSpawn(player);
@@ -44,6 +45,14 @@ public class mineFarmIslandCommand implements CommandExecutor {
         if (args.length == 1) {
             if (args[0].equals("셋홈") || args[0].equals("tptgha")) {
                 islandUtil.setIslandSpawn(player);
+                return true;
+            }
+            if (args[0].equals("status")) {
+                islandUtil.printStatus(player);
+                return true;
+            }
+            if (args[0].equals("정보") || args[0].equals("info")) {
+                Bukkit.getPluginManager().callEvent(openIslandConfig);
                 return true;
             }
             if (args[0].equals("이름") || args[0].equals("dlfma")) {
@@ -68,13 +77,21 @@ public class mineFarmIslandCommand implements CommandExecutor {
                 islandUtil.setIslandName(player, args[1]);
                 return true;
             }
+            if (args[0].equals("추가") || args[0].equals("add")) {
+                islandUtil.addIslandPlayers(player, Bukkit.getOfflinePlayer(args[1]));
+                return true;
+            }
+            if (args[0].equals("rm")) {
+                islandUtil.removeIslandPlayers(player,Bukkit.getOfflinePlayer(args[1]));
+                return true;
+            }
             if (args[0].equals("날씨") || args[0].equals("wt")) {
                 if (args[1].equals("clear")) {
-                    islandUtil.setIslandWeather(player, false);
+                    islandUtil.setRain(player, false);
                     player.sendMessage("날씨를 맑음으로 선택하였습니다.");
                 }
                 else if (args[1].equals("rain")) {
-                    islandUtil.setIslandWeather(player, true);
+                    islandUtil.setRain(player, true);
                     player.sendMessage("날씨를 비로 선택하였습니다.");
                 }
                 else {

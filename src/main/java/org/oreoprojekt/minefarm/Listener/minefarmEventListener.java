@@ -75,6 +75,6 @@ public class minefarmEventListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
         Player player = e.getPlayer();
-        islandUtil.setPlayerWeather(player);
+        islandUtil.setPlayer(player);
     }
 }
